@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>4000 Weeks Life Counter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        .counter {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .stat {
+            background-color: #333;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #4CAF50;
+        }
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        .percentage {
+            height: 20px;
+            background-color: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .percentage-fill {
+            height: 100%;
+            background-color: #4CAF50;
+            transition: width 1s ease;
+        }
+        .percentage-text {
+            margin-top: 5px;
+            font-size: 16px;
+        }
+        .note {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-top: 20px;
+            max-width: 400px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Your 4000 Weeks Life Counter</h1>
+        
+        <div class="percentage">
+            <div class="percentage-fill" id="percentageFill"></div>
+        </div>
+        <div class="percentage-text" id="percentageText">0% of 4000 weeks used</div>
+        
+        <div class="counter">
+            <div class="stat">
+                <div class="stat-value" id="weeksLeft">0</div>
+                <div class="stat-label">Weeks Remaining</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="daysLeft">0</div>
+                <div class="stat-label">Days Remaining</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="hoursLeft">0</div>
+                <div class="stat-label">Hours Remaining</div>
+            </div>
+        </div>
+        
+        <div class="note">
+            Based on birthdate: October 10, 2001<br>
+            Updates automatically every second (IST timezone)
+        </div>
+    </div>
+
+    <script>
+        function updateCounter() {
+            // Your birthdate in IST
+            const birthDate = new Date('2001-10-10T00:00:00+05:30');
+            
+            // Total weeks in a lifetime (4000)
+            const totalWeeks = 4000;
+            const totalDays = totalWeeks * 7;
+            const totalHours = totalDays * 24;
+            
+            // Calculate end date (birthdate + 4000 weeks)
+            const endDate = new Date(birthDate);
+            endDate.setDate(endDate.getDate() + (totalWeeks * 7));
+            
+            // Current date and time in IST
+            const now = new Date();
+            const istOffset = 5.5 * 60 * 60 * 1000; // IST is UTC+5:30
+            const utcOffset = now.getTimezoneOffset() * 60 * 1000;
+            const istTime = new Date(now.getTime() + utcOffset + istOffset);
+            
+            // Calculate remaining time
+            const timeElapsed = istTime - birthDate;
+            const timeRemaining = endDate - istTime;
+            
+            // Calculate weeks, days, hours
+            const msPerHour = 1000 * 60 * 60;
+            const msPerDay = msPerHour * 24;
+            const msPerWeek = msPerDay * 7;
+            
+            const weeksElapsed = timeElapsed / msPerWeek;
+            const weeksRemaining = Math.max(0, totalWeeks - weeksElapsed);
+            const daysRemaining = Math.max(0, timeRemaining / msPerDay);
+            const hoursRemaining = Math.max(0, timeRemaining / msPerHour);
+            
+            // Calculate percentage of life used
+            const percentageUsed = (weeksElapsed / totalWeeks) * 100;
+            
+            // Update the display
+            document.getElementById('weeksLeft').textContent = Math.floor(weeksRemaining).toLocaleString();
+            document.getElementById('daysLeft').textContent = Math.floor(daysRemaining).toLocaleString();
+            document.getElementById('hoursLeft').textContent = Math.floor(hoursRemaining).toLocaleString();
+            
+            document.getElementById('percentageFill').style.width = Math.min(100, percentageUsed) + '%';
+            document.getElementById('percentageText').textContent = 
+                `${percentageUsed.toFixed(2)}% of 4000 weeks used`;
+        }
+        
+        // Update immediately and then every second
+        updateCounter();
+        setInterval(updateCounter, 1000);
+    </script>
+</body>
+</html>
